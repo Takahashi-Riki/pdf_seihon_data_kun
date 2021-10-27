@@ -1,0 +1,148 @@
+<!--<input type="file"　name="images[]" multiple=true>-->
+<%= form_with url: result_path, method: :get, local: true, multipart: true do |f| %>
+  <%= f.file_field :pdfs, multiple: true %>
+  <br>
+  <%= hidden_field_tag "filename_concated" %>
+  <%= hidden_field_tag "count_concated" %>
+  <%= f.submit %>
+<% end %>
+<div id="pdf_list_container">
+  <ul id="pdf_list">
+  </ul>
+</div>
+<script type="text/javascript">
+  $(function(){
+    //
+    $("#pdf_list").sortable();
+    //
+    const file_obj = {}
+    const pdf_list = $("#pdf_list")
+    // function getNowString(){
+    //   const now = new Date();
+    //   let now_string = String(now.getFullYear())+String(now.getMonth()+1)+String(now.getDate())+String(now.getHours())+String(now.getMinutes())+String(now.getSeconds());
+    //   if(now_string.length<14){
+    //     const diff = 14 - now_string.length;
+    //     now_string = diff*String(0)+now_string
+    //   }
+    //   return now_string
+    // }
+    function getNewOrder(){
+      file_obj_length = Object.keys(file_obj).length;
+      if(file_obj_length===0){
+        return 0
+      }else{
+        const keys_array = Object.keys(file_obj);
+        console.log(keys_array);
+        return Number(keys_array[file_obj_length-1])+1
+      }
+    }
+    function concatVariables(...args){
+      let concated_variables = ""
+      for(let variable of args) {
+        if(concated_variables.length===0){
+          concated_variables = variable;
+        }else{
+          concated_variables += ","+variable;
+        }
+      }
+      return concated_variables
+    }
+    function updateConcatedVariables(){
+      let filename_list = []
+      let count_list = []
+      for(let i in file_obj){
+        filename_list.push(file_obj[i].name);
+        count_list.push(file_obj[i].count);
+      }
+      filename_concated = concatVariables(filename_list);
+      count_concated = concatVariables(count_list);
+      $("#filename_concated").val(filename_concated);
+      $("#count_concated").val(count_concated);
+    }
+    function setNewObjAndLiHtml(order, filename){
+      file_obj[order] = {
+        name: filename,
+        count: 0
+      }
+      updateConcatedVariables();
+      pdf_li_html = `
+        <li id=${order}>
+          <span class="filename">${filename}</span>
+          <span class="minus10">-10</span>
+          <span class="minus1">-1</span>
+          <span class="count">0</span>
+          <span class="plus1">+1</span>
+          <span class="plus10">+10</span>
+          <span class="copy"><i class="far fa-copy"></i></span>
+          <span class="delete"><i class="far fa-trash-alt"></i></span>
+        </li>
+      `;
+      pdf_list.append(pdf_li_html);
+    }
+    $("input[type=file]").change(function() {
+      const files = $(this).prop('files');
+      const pattern = ".pdf"
+      for(i=0;i<files.length;i++){
+        const filename = files[i].name;
+        if((filename.lastIndexOf(pattern)+pattern.length!==filename.length)||(pattern.length>filename.length)){
+          alert(`製本データ作成に利用できるのはPDFのみです\n${filename}はPDFではありません`);
+        //}else if(file_obj.hasOwnProperty(filename)){
+          //alert("このファイルは既にアップロードされています");
+        }else{
+          const order = getNewOrder();
+          setNewObjAndLiHtml(order, filename);
+        }
+      }
+    });
+    //
+    function getCount(count_value, change_value){
+      tmp_result = Number(count_value) + Number(change_value);
+      if(tmp_result<0){
+        return 0
+      }else{
+        return tmp_result
+      }
+    }
+    $(document).on('click', '.minus10, .minus1, .plus1, .plus10', function () {
+      change_value_class = $(this).attr("class");
+      let change_value;
+      switch(change_value_class){
+        case 'minus10':
+          change_value = -10;
+          break;
+        case 'minus1':
+          change_value = -1;
+          break;
+        case 'plus1':
+          change_value = 1;
+          break;
+        case 'plus10':
+          change_value = 10;
+          break;
+        default:
+          change_value = 0;
+          break;
+      }
+      const count = $(this).parent().find(".count");
+      const count_value = Number($(this).parent().find(".count").text());
+      count.html(getCount(count_value,change_value));
+      const order = Number($(this).parent().attr("id"));
+      file_obj[order].count = Number($(this).parent().find(".count").text());
+      updateConcatedVariables();
+      console.log(file_obj)
+    });
+    //
+    $(document).on('click', '.delete', function(){
+      $(this).parent().remove();
+      //const filename = $(this).parent().find(".filename").text();
+      const order = $(this).parent().attr("id");
+      delete file_obj[order];
+    });
+    //
+    $(document).on('click', '.copy', function(){
+      const order = getNewOrder();
+      const filename = $(this).parent().find(".filename").text();
+      setNewObjAndLiHtml(order, filename);
+    });
+  });
+</script>
