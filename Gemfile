@@ -55,6 +55,3 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 #to combine pdf
 gem "combine_pdf"
-
-#to upload pdf
-gem 'carrierwave'
