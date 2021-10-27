@@ -1,6 +1,6 @@
 <!--<input type="file"　name="images[]" multiple=true>-->
-<%= form_with url: result_path, method: :get, local: true, multipart: true do |f| %>
-  <%= f.file_field :pdfs, multiple: true %>
+<%= form_with url: create_path, local: true, multipart: true do |f| %>
+  <%= f.file_field :pdfs_file, multiple: true %>
   <br>
   <%= hidden_field_tag "filename_concated" %>
   <%= hidden_field_tag "count_concated" %>
