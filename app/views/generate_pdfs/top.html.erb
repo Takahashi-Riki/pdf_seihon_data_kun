@@ -107,13 +107,13 @@
       }
       filename_concated.val(concatVariables(filename_list));
       count_concated.val(concatVariables(count_list));
+      console.log(file_obj);
     }
     function createNewLiHTML(order, filename){
       if(filename.length > 30){
         console.log(filename.slice(26));
         filename = filename.slice(0,22) + "..." + filename.slice(-8)
       }
-      console.log(filename);
       pdf_li_html = `
         <li class="each_file_wrapper" id=${order}>
           <div class="filename_wrapper">
@@ -186,7 +186,7 @@
       const count = $(this).parent().find(".count");
       const count_value = Number($(this).parent().find(".count").text());
       count.html(getCount(count_value,change_value));
-      const order = Number($(this).parent().attr("id"));
+      const order = Number($(this).parent().parent().attr("id"));
       file_obj[order].count = Number($(this).parent().find(".count").text());
       updateConcatedVariables();
     });
