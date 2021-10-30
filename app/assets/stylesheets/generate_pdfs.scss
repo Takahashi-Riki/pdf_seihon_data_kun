@@ -1,3 +1,214 @@
-// Place all the styles related to the GeneratePdfs controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: https://sass-lang.com/
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body{
+  min-width: 900px;
+  min-height: 100vh;
+  position: relative;
+  padding-bottom: 30px;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+header{
+  padding-left: 10px;
+  width: 100%;
+  height: 60px;
+  box-shadow: 0px 5px 10px -5px rgba(116, 116, 116, 0.5);
+  line-height: 60px;
+}
+
+header a{
+  color: #028192;
+  font-size: 25px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+footer{
+  width: 100%;
+  height: 30px;
+  position: absolute;
+  bottom: 0;
+  background-color: #028192;
+  text-align: center;
+  font-size: 12px;
+  line-height: 30px;
+  color: white;
+}
+
+#flash{
+  background-color: rgb(255, 78, 78);
+  color: white;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#upper_side_wrapper{
+  display: flex;
+}
+
+#radio_button_container{
+  flex-basis: 70%;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 1%;
+}
+
+#radio_button_container p{
+  margin-bottom: 3px;
+  width: max-content;
+  color: #028192;
+  font-weight: bold;
+  border-bottom: #028192 solid 2px;
+}
+
+#button_wrapper{
+  display: flex;
+  flex-basis: 30%;
+}
+
+#add_white_page{
+  flex-basis: 50%;
+  background-color: #028192;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#submit{
+  flex-basis: 50%;
+  background-color: rgb(224, 191, 0);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#pdf_file_container{
+  position: relative;
+}
+
+#file_field{
+  height: 200px;
+  width: 100%;
+  cursor: pointer;
+  position: absolute;
+  z-index: 1;
+}
+
+#file_field_message{
+  height: 200px;
+  width: 100%;
+  cursor: pointer;
+  position: absolute;
+  background-color: #d1e3e6;
+  z-index: 2;
+  pointer-events: none;
+  line-height: 200px;
+  text-align: center;
+  border: #b1c1c4 dashed 2px;
+  transition: 0.3s;
+}
+
+#pdf_list_wrapper{
+  margin-top: 200px;
+}
+
+#pdf_list_title{
+  padding-left: 10px;
+  width: 100%;
+  height: 50px;
+  border-bottom: rgba(116, 116, 116, 0.5) solid 1px;
+  line-height: 50px;
+  color: #028192;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.each_file_wrapper{
+  display: flex;
+  justify-content: space-between;
+  height: 35px;
+  border-top: rgba(116, 116, 116, 0.5) solid 1px;
+  border-bottom: rgba(116, 116, 116, 0.5) solid 1px;
+}
+
+.filename_wrapper{
+  padding-left: 10px;
+}
+
+.dragicon{
+  font-size: 25px;
+  line-height: 35px;
+  color: #028192;
+}
+
+.filename{
+  font-size: 18px;
+  line-height: 35px;
+  color: #028192;
+}
+
+.parameter_and_button_wrapper{
+  font-size: 17px;
+  line-height: 35px;
+}
+
+.parameter_and_button_wrapper span{
+  cursor: pointer;
+}
+
+.minus10{
+  padding: 5px 7px;
+  background-color: #028192;
+  border-radius: 10%;
+  line-height: 35px;
+  color: white;
+}
+
+.minus1{
+  padding: 5px 11px;
+  background-color: #028192;
+  border-radius: 10%;
+  line-height: 35px;
+  color: white;
+}
+
+.plus10{
+  padding: 5px 5px;
+  background-color: #028192;
+  border-radius: 10%;
+  line-height: 35px;
+  color: white;
+}
+
+.plus1{
+  padding: 5px 9px;
+  background-color: #028192;
+  border-radius: 10%;
+  line-height: 35px;
+  color: white;
+}
+
+.count{
+  padding: 0px 10px;
+  color: #028192;
+  font-weight: bold;
+}
+
+.copy{
+  padding: 0px 7px;
+  color: #028192;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.delete{
+  padding: 0px 15px 0px 4px;
+  color: #028192;
+  font-size: 20px;
+  font-weight: bold;
+}

@@ -1,41 +1,86 @@
-<!--<input type="file"　name="images[]" multiple=true>-->
-<%= form_with url: create_path, local: true, multipart: true do |f| %>
-  <%= f.file_field :pdfs_file, multiple: true %>
-  <br>
-  <%= hidden_field_tag "filename_concated" %>
-  <%= hidden_field_tag "count_concated" %>
-  <%= f.submit %>
-<% end %>
-<div id="pdf_list_container">
+<div id="form_wrapper">
+  <%= form_with url: create_path, local: true, multipart: true do |f| %>
+    <div id="upper_side_wrapper">
+      <div id="radio_button_container">
+        <div id="radio_button_about_book_container">
+          <p>作成する製本データについて</p>
+          <div id="radio_button_about_start_wrapper">
+            <%= f.radio_button :start, :"right", checked: true %>
+            <%= f.label :start, "右始まり", value: :"right" %>
+            <%= f.radio_button :start, :"left" %>
+            <%= f.label :start, "左始まり", value: :"left" %>
+          </div>
+        </div>
+        <div id="radio_button_about_white_page_container">
+          <p>挿入する白紙データについて</p>
+          <div id="radio_button_about_direction_wrapper">
+            <%= f.radio_button :direction, :"vertical", checked: true %>
+            <%= f.label :start, "縦", value: :"vertical" %>
+            <%= f.radio_button :direction, :"horizontal" %>
+            <%= f.label :start, "横", value: :"horizontal" %>
+          </div>
+          <div id="radio_button_about_size_wrapper">
+            <%= f.radio_button :size, :"A4", checked: true %>
+            <%= f.label :start, "片面A4", value: :"A4" %>
+            <%= f.radio_button :size, :"B5(JIS)" %>
+            <%= f.label :start, "片面B5(JIS)", value: :"B5(JIS)" %>
+          </div>
+        </div>
+      </div>
+      <div id="button_wrapper">
+        <button type="button" id="add_white_page">白紙を挿入する</button>
+        <%= f.submit "送信", id: "submit" %>
+      </div>
+    </div>
+    <div id="lower_side_wrapper">
+      <div id="pdf_file_container">
+        <%= f.file_field :pdfs_file, id: "file_field", multiple: true, accept:"application/pdf" %>
+        <div id="file_field_message">PDFファイルを選択/またはここにPDFファイルをドロップ</div>
+        <%= hidden_field_tag "filename_concated" %>
+        <%= hidden_field_tag "count_concated" %>
+      </div>
+    </div>
+  <% end %>
+</div>
+<div id="pdf_list_wrapper">
+  <p id="pdf_list_title">各PDFファイルの並び順と連続結合回数</p>
   <ul id="pdf_list">
   </ul>
 </div>
 <script type="text/javascript">
   $(function(){
-    //
-    $("#pdf_list").sortable();
-    //
+    //declare variables.
     const file_obj = {}
-    const pdf_list = $("#pdf_list")
-    // function getNowString(){
-    //   const now = new Date();
-    //   let now_string = String(now.getFullYear())+String(now.getMonth()+1)+String(now.getDate())+String(now.getHours())+String(now.getMinutes())+String(now.getSeconds());
-    //   if(now_string.length<14){
-    //     const diff = 14 - now_string.length;
-    //     now_string = diff*String(0)+now_string
-    //   }
-    //   return now_string
-    // }
+    const pdf_list = $("#pdf_list");
+    const filename_concated = $("#filename_concated");
+    const count_concated = $("#count_concated");
+    const add_white_page = $("#add_white_page")
+    //make pdf_list sortable with jQuery UI.
+    $("#pdf_list").sortable({
+      opacity: 0.5,
+      placeholder: "drag",
+      handle: ".dragicon",
+      axis: "y",
+      update: function( event, ui ) {
+        sort_array = $(this).sortable("toArray");
+        console.log(sort_array);
+        for(let i in file_obj){
+          file_obj[Number(sort_array[i])].order = Number(i);
+        }
+        updateConcatedVariables();
+      }
+    });
+    //search max order in file_obj and return new order being one more than max order.
     function getNewOrder(){
       file_obj_length = Object.keys(file_obj).length;
       if(file_obj_length===0){
         return 0
       }else{
         const keys_array = Object.keys(file_obj);
-        console.log(keys_array);
         return Number(keys_array[file_obj_length-1])+1
       }
     }
+    //concatenate variables using ",".
     function concatVariables(...args){
       let concated_variables = ""
       for(let variable of args) {
@@ -47,62 +92,77 @@
       }
       return concated_variables
     }
+    //update filename_concated and count_concated.
     function updateConcatedVariables(){
       let filename_list = []
       let count_list = []
-      for(let i in file_obj){
-        filename_list.push(file_obj[i].name);
-        count_list.push(file_obj[i].count);
+      const file_obj_sorted = Object.keys(file_obj).map(function(key) {
+        return file_obj[key];
+      }).sort(function(a, b) {
+        return (a.order < b.order) ? -1 : 1;
+      });
+      for(let i in file_obj_sorted){
+        filename_list.push(file_obj_sorted[i].name);
+        count_list.push(file_obj_sorted[i].count);
       }
-      filename_concated = concatVariables(filename_list);
-      count_concated = concatVariables(count_list);
-      $("#filename_concated").val(filename_concated);
-      $("#count_concated").val(count_concated);
+      filename_concated.val(concatVariables(filename_list));
+      count_concated.val(concatVariables(count_list));
     }
-    function setNewObjAndLiHtml(order, filename){
-      file_obj[order] = {
-        name: filename,
-        count: 0
+    function createNewLiHTML(order, filename){
+      if(filename.length > 30){
+        console.log(filename.slice(26));
+        filename = filename.slice(0,22) + "..." + filename.slice(-8)
       }
-      updateConcatedVariables();
+      console.log(filename);
       pdf_li_html = `
-        <li id=${order}>
-          <span class="filename">${filename}</span>
-          <span class="minus10">-10</span>
-          <span class="minus1">-1</span>
-          <span class="count">0</span>
-          <span class="plus1">+1</span>
-          <span class="plus10">+10</span>
-          <span class="copy"><i class="far fa-copy"></i></span>
-          <span class="delete"><i class="far fa-trash-alt"></i></span>
+        <li class="each_file_wrapper" id=${order}>
+          <div class="filename_wrapper">
+            <span class="dragicon"><i class="fas fa-bars"></i></span>
+            <span class="filename">${filename}</span>
+          </div>
+          <div class="parameter_and_button_wrapper">
+            <span class="minus10">-10</span>
+            <span class="minus1">-1</span>
+            <span class="count">1</span>
+            <span class="plus1">+1</span>
+            <span class="plus10">+10</span>
+            <span class="copy"><i class="far fa-copy"></i></span>
+            <span class="delete"><i class="far fa-trash-alt"></i></span>
+          </div>
         </li>
       `;
-      pdf_list.append(pdf_li_html);
+      return pdf_li_html
     }
+    //When uploading or copying files, add them to file_obj and list in HTML.
+    function setNewObjAndLiHtml(order, filename){
+      file_obj[order] = {
+        order: order,
+        name: filename,
+        count: 1
+      }
+      updateConcatedVariables();
+      pdf_list.append(createNewLiHTML(order, filename));
+    }
+    //Return the sum of count_value and change_value, but the sum can't be less than zero.
+    function getCount(count_value, change_value){
+      tmp_result = Number(count_value) + Number(change_value);
+      if(tmp_result<1){
+        return 1
+      }else{
+        return tmp_result
+      }
+    }
+    //When uploading files, call setNewObjAndLiHtml.
     $("input[type=file]").change(function() {
       const files = $(this).prop('files');
       const pattern = ".pdf"
       for(i=0;i<files.length;i++){
         const filename = files[i].name;
-        if((filename.lastIndexOf(pattern)+pattern.length!==filename.length)||(pattern.length>filename.length)){
-          alert(`製本データ作成に利用できるのはPDFのみです\n${filename}はPDFではありません`);
-        //}else if(file_obj.hasOwnProperty(filename)){
-          //alert("このファイルは既にアップロードされています");
-        }else{
-          const order = getNewOrder();
-          setNewObjAndLiHtml(order, filename);
-        }
+        const order = getNewOrder();
+        setNewObjAndLiHtml(order, filename);
       }
     });
-    //
-    function getCount(count_value, change_value){
-      tmp_result = Number(count_value) + Number(change_value);
-      if(tmp_result<0){
-        return 0
-      }else{
-        return tmp_result
-      }
-    }
+    //When clicking a calculation button, change the amount of clicked file.
     $(document).on('click', '.minus10, .minus1, .plus1, .plus10', function () {
       change_value_class = $(this).attr("class");
       let change_value;
@@ -129,19 +189,23 @@
       const order = Number($(this).parent().attr("id"));
       file_obj[order].count = Number($(this).parent().find(".count").text());
       updateConcatedVariables();
-      console.log(file_obj)
     });
-    //
+    //When clicking a delete button, delete the file clicked.
     $(document).on('click', '.delete', function(){
       $(this).parent().remove();
-      //const filename = $(this).parent().find(".filename").text();
       const order = $(this).parent().attr("id");
       delete file_obj[order];
     });
-    //
+    //When clicking a copy button, copy the file clicked.
     $(document).on('click', '.copy', function(){
       const order = getNewOrder();
       const filename = $(this).parent().find(".filename").text();
+      setNewObjAndLiHtml(order, filename);
+    });
+    //
+    add_white_page.click(function(){
+      const order = getNewOrder();
+      const filename = "白紙ページ";
       setNewObjAndLiHtml(order, filename);
     });
   });
