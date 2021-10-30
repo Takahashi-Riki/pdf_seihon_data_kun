@@ -1,1 +1,3 @@
-<%= link_to 'download', "/download/"+@identification_number %>
+<div id="download_link_wrapper">
+  <%= link_to '製本データをダウンロード', "/download/"+@identification_number, id:"download_link" %>
+</div>
