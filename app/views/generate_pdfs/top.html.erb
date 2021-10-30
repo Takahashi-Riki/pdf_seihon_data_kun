@@ -192,14 +192,14 @@
     });
     //When clicking a delete button, delete the file clicked.
     $(document).on('click', '.delete', function(){
-      $(this).parent().remove();
-      const order = $(this).parent().attr("id");
+      $(this).parent().parent().remove();
+      const order = $(this).parent().parent().attr("id");
       delete file_obj[order];
     });
     //When clicking a copy button, copy the file clicked.
     $(document).on('click', '.copy', function(){
       const order = getNewOrder();
-      const filename = $(this).parent().find(".filename").text();
+      const filename = $(this).parent().parent().find(".filename_wrapper").find(".filename").text();
       setNewObjAndLiHtml(order, filename);
     });
     //
