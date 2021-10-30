@@ -48,7 +48,8 @@ class GeneratePdfsController < ApplicationController
         end
       end
       identification_number = rand(100000000000).to_s
-      pdf.save identification_number + "_combined.pdf"
+      pdf_name = identification_number + "_combined.pdf"
+      pdf.save pdf_name
       Dir.glob("#{Rails.root}/public/uploaded/*") do |file|
         begin
           File.delete(file)
@@ -59,11 +60,11 @@ class GeneratePdfsController < ApplicationController
   end
 
   def result
-    @identification_number = params[:identification_number]
+    @identification_number = params[:identification_number].to_s
   end
 
   def download
-    send_file(params[:identification_number] + "_combined.pdf")
+    send_file(params[:identification_number].to_s + "_combined.pdf")
   end
 
   # private
