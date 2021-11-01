@@ -1,41 +1,41 @@
 <div id="form_wrapper">
-  <%= form_with url: create_path, local: true, multipart: true do |f| %>
+  <%= form_with url: "/" + @language + "/create", local: true, multipart: true do |f| %>
     <div id="upper_side_wrapper">
       <div id="radio_button_container">
         <div id="radio_button_about_book_container">
-          <p>作成する製本データについて</p>
+          <p><%= @about_binded_data %></p>
           <div id="radio_button_about_start_wrapper">
             <%= f.radio_button :start, :"right", checked: true %>
-            <%= f.label :start, "右始まり", value: :"right" %>
+            <%= f.label :start, @right_start, value: :"right" %>
             <%= f.radio_button :start, :"left" %>
-            <%= f.label :start, "左始まり", value: :"left" %>
+            <%= f.label :start, @left_start, value: :"left" %>
           </div>
         </div>
         <div id="radio_button_about_white_page_container">
-          <p>挿入する白紙データについて</p>
+          <p><%= @about_white_page_data %></p>
           <div id="radio_button_about_direction_wrapper">
             <%= f.radio_button :direction, :"vertical", checked: true %>
-            <%= f.label :start, "縦", value: :"vertical" %>
+            <%= f.label :start, @vertical, value: :"vertical" %>
             <%= f.radio_button :direction, :"horizontal" %>
-            <%= f.label :start, "横", value: :"horizontal" %>
+            <%= f.label :start, @horizontal, value: :"horizontal" %>
           </div>
           <div id="radio_button_about_size_wrapper">
             <%= f.radio_button :size, :"A4", checked: true %>
-            <%= f.label :start, "片面A4", value: :"A4" %>
+            <%= f.label :start, @a4, value: :"A4" %>
             <%= f.radio_button :size, :"B5(JIS)" %>
-            <%= f.label :start, "片面B5(JIS)", value: :"B5(JIS)" %>
+            <%= f.label :start, @b5, value: :"B5(JIS)" %>
           </div>
         </div>
       </div>
       <div id="button_wrapper">
-        <button type="button" id="add_white_page">白紙を挿入する</button>
-        <%= f.submit "送信", id: "submit" %>
+        <button type="button" id="add_white_page"><%= @add_white_page %></button>
+        <%= f.submit @submit, id: "submit" %>
       </div>
     </div>
     <div id="lower_side_wrapper">
       <div id="pdf_file_container">
         <%= f.file_field :pdfs_file, id: "file_field", multiple: true, accept:"application/pdf" %>
-        <div id="file_field_message">PDFファイルを選択/またはここにPDFファイルをドロップ</div>
+        <div id="file_field_message"><%= @select_pdf_file %></div>
         <%= hidden_field_tag "filename_concated" %>
         <%= hidden_field_tag "count_concated" %>
       </div>
@@ -43,7 +43,7 @@
   <% end %>
 </div>
 <div id="pdf_list_wrapper">
-  <p id="pdf_list_title">各PDFファイルの並び順と連続結合回数</p>
+  <p id="pdf_list_title"><%= @order_and_count %></p>
   <ul id="pdf_list">
   </ul>
 </div>
@@ -63,7 +63,6 @@
       axis: "y",
       update: function( event, ui ) {
         sort_array = $(this).sortable("toArray");
-        console.log(sort_array);
         for(let i in file_obj){
           file_obj[Number(sort_array[i])].order = Number(i);
         }

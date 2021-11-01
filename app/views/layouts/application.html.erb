@@ -7,22 +7,25 @@
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
-
   <body>
     <header>
-      <%= link_to 'PDF製本データくん', root_path %>
+      <div id="logo">
+        <%= link_to @logo, "/" + @language %>
+      </div>
+      <div id="select_language_wrapper">
+        <%= link_to @change_language_message, request.path_info.gsub(@language, @other_language) %>
+      </div>
     </header>
     <div id="flash">
-      <% if flash.each %>
+      <% if flash %>
         <% flash.each do |message_type, message| %>
           <%= message %>
         <% end %>
       <% end %>
     </div>
     <%= yield %>
-    <%#= debug(params) if Rails.env.development? %>
     <footer>
-      © 2021 PDF製本データくん All Rights Reserved.
+      <%= @footer %>
     </footer>
   </body>
 </html>
