@@ -1,6 +1,10 @@
 class GeneratePdfsController < ApplicationController
   before_action :set_language
 
+  def root
+    redirect_to "/ja"
+  end
+
   def top
     begin
       File.delete("combined.pdf")
@@ -71,25 +75,7 @@ class GeneratePdfsController < ApplicationController
 
     def set_language
       @language = pdf_params[:language]
-      if @language == "ja"
-        @other_language = "en"
-        @logo = "PDF製本データくん"
-        @footer = "© 2021 PDF製本データくん All Rights Reserved."
-        @change_language_message = "Change the language of this website to English"
-        @about_binded_data = "作成する製本データについて"
-        @right_start = "右始まり"
-        @left_start = "左始まり"
-        @about_white_page_data = "挿入する白紙データについて"
-        @vertical = "縦"
-        @horizontal = "横"
-        @a4 = "片面A4"
-        @b5 = "片面B5(JIS)"
-        @add_white_page =  "白紙を挿入する"
-        @submit = "送信"
-        @select_pdf_file = "PDFファイルを選択/またはここにPDFファイルをドロップ"
-        @order_and_count = "各PDFファイルの並び順と連続結合回数"
-        @download_binded_data = "製本データをダウンロード"
-      elsif
+      if @language == "en"
         @other_language = "ja"
         @logo = "Mr.PDF Bookbinder"
         @footer = "© 2021 PDF製本データくん All Rights Reserved."
@@ -107,6 +93,25 @@ class GeneratePdfsController < ApplicationController
         @select_pdf_file = "Select PDF file / drop PDF file here"
         @order_and_count = "How do you arrange PDF files / How many times do you join a PDF file in a row?"
         @download_binded_data = "Download binded PDF data"
+      elsif
+        @language = "ja"
+        @other_language = "en"
+        @logo = "PDF製本データくん"
+        @footer = "© 2021 PDF製本データくん All Rights Reserved."
+        @change_language_message = "Change the language of this website to English"
+        @about_binded_data = "作成する製本データについて"
+        @right_start = "右始まり"
+        @left_start = "左始まり"
+        @about_white_page_data = "挿入する白紙データについて"
+        @vertical = "縦"
+        @horizontal = "横"
+        @a4 = "片面A4"
+        @b5 = "片面B5(JIS)"
+        @add_white_page =  "白紙を挿入する"
+        @submit = "送信"
+        @select_pdf_file = "PDFファイルを選択/またはここにPDFファイルをドロップ"
+        @order_and_count = "各PDFファイルの並び順と連続結合回数"
+        @download_binded_data = "製本データをダウンロード"
       end
     end
 

@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  #root 'generate_pdfs#top'
+  root 'generate_pdfs#root'
   get "/:language" => 'generate_pdfs#top'
   post '/:language/create' => 'generate_pdfs#create'
   get '/:language/create' => 'generate_pdfs#top'
