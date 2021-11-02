@@ -35,6 +35,8 @@
 
 /public/packs
 /public/packs-test
+/public/uploaded/*
+/public/created/*
 /node_modules
 /yarn-error.log
 yarn-debug.log*

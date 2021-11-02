@@ -1,22 +1,23 @@
+require 'time'
+
 class GeneratePdfsController < ApplicationController
   before_action :set_language
 
   def root
+    # Japanese is the default language
     redirect_to "/ja"
   end
 
   def top
-    begin
-      File.delete("combined.pdf")
-    rescue
-      puts "-----combined.pdf does not exist-----"
-    end
+
   end
 
   def create
-    filename_array = params["filename_concated"].split(",")
-    count_array = params["count_concated"].split(",")
-    pdfs_file = params["pdfs_file"]
+    filename_array = pdf_params["filename_concated"].split(",")
+    count_array = pdf_params["count_concated"].split(",")
+    pdfs_file = pdf_params["pdfs_file"]
+    whtie_page = pdf_params[:size] + "_" + pdf_params[:direction] + ".pdf"
+    starting_side = pdf_params[:start]
     pdf = CombinePDF.new
     if pdfs_file.nil?
       flash.now[:danger] = "1つ以上のPDFをアップロードしてください" # This message means that you must upload one or more files.
@@ -25,52 +26,52 @@ class GeneratePdfsController < ApplicationController
       for i in 0..pdfs_file.length-1
         uploaded_file = pdfs_file[i]
         begin
-          File.binwrite("public/uploaded/#{uploaded_file.original_filename}", uploaded_file.read)
+          #File.binwrite("public/uploaded/#{uploaded_file.original_filename}", uploaded_file.read)
+          File.binwrite(get_filepath("uploaded", uploaded_file.original_filename), uploaded_file.read)
         rescue
-          puts "-----error occured during saving pdf-----"
-          puts pdfs_file[i]
+          puts "-----error occured during saving #{uploaded_file}-----"
         end
       end
-      if params[:start] == "left"
-        filename = params[:size] + "_" + params[:direction] + ".pdf"
-        pdf << CombinePDF.load(Rails.root.join('public/addition', filename))
+      if starting_side == "left"
+        pdf << CombinePDF.load(get_filepath("addition", white_page))
       end
       for i in 0..filename_array.length-1
+        selected_file = filename_array[i]
         for k in 0..count_array[i].to_i-1
-          if filename_array[i] == "白紙ページ" #"白紙ページ" means a white page nothing is writen on
-            filename = params[:size] + "_" + params[:direction] + ".pdf"
+          if selected_file == "白紙ページ" #"白紙ページ" means a white page nothing is writen on
             begin
-              pdf << CombinePDF.load(Rails.root.join('public/addition', filename))
+              pdf << CombinePDF.load(get_filepath("addition", white_page))
             rescue
               puts "-----error occured during combining white page pdf-----"
             end
-          elsif
+          else
             begin
-              pdf << CombinePDF.load(Rails.root.join('public/uploaded', filename_array[i]))
+              pdf << CombinePDF.load(get_filepath("uploaded", selected_file))
             rescue
-              puts "-----error occured during combining #{filename_array[i]}-----"
+              puts "-----error occured during combining #{selected_file}-----"
             end
           end
         end
       end
-      identification_number = rand(100000000000).to_s
+      identification_number = Time.new.strftime("%Y%m%d%H%M%S%L")
       pdf_name = identification_number + "_combined.pdf"
-      pdf.save pdf_name
+      pdf.save get_filepath("created", pdf_name)
       redirect_to "/" + @language + "/result/" + identification_number
     end
   end
 
   def result
-    @identification_number = params[:identification_number].to_s
+    @identification_number = pdf_params[:identification_number].to_s
   end
 
   def download
-    send_file(params[:identification_number].to_s + "_combined.pdf")
+    pdf_name = pdf_params[:identification_number].to_s + "_combined.pdf"
+    send_file(get_filepath("created", pdf_name))
   end
 
   private
     def pdf_params
-      params.permit(:filename_concated, :count_concated, :language, pdfs: [])
+      params.permit(:filename_concated, :count_concated, :identification_number, :language, :size, :direction, :start, pdfs_file: [])
     end
 
     def set_language
@@ -84,13 +85,13 @@ class GeneratePdfsController < ApplicationController
         @right_start = "Right start"
         @left_start = "Left start"
         @about_white_page_data = "How do you add white page?"
-        @vertical = "vertical"
-        @horizontal = "horizontal"
+        @vertical = "Vertical"
+        @horizontal = "Horizontal"
         @a4 = "A4 per side"
         @b5 = "B5(JIS) per side"
-        @add_white_page =  "Add white page"
+        @add_white_page =  "Add a white page"
         @submit = "Submit"
-        @select_pdf_file = "Select PDF file / drop PDF file here"
+        @select_pdf_file = "Select PDF files / drop PDF files here"
         @order_and_count = "How do you arrange PDF files / How many times do you join a PDF file in a row?"
         @download_binded_data = "Download binded PDF data"
       elsif
@@ -115,4 +116,7 @@ class GeneratePdfsController < ApplicationController
       end
     end
 
+    def get_filepath(directory, filename)
+      Rails.root.join('public', directory, filename)
+    end
 end
