@@ -37,6 +37,8 @@
 /public/packs-test
 /public/uploaded/*
 /public/created/*
+!/public/uploaded/.gitkeep
+!/public/created/.gitkeep
 /node_modules
 /yarn-error.log
 yarn-debug.log*
