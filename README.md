@@ -1,24 +1,11 @@
-# README
+# PDF-SEIHON-DATA-KUN - Open Source making a bookbinding data from PDF files
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+PDF-SEIHON-DATA-KUN(PDF製本データくん) is an application to make a bookbinding data from PDF data you have.
 
-Things you may want to cover:
+If you are an office worker, you may want to combine PDF data to create bookbinding data.
 
-* Ruby version
+In that case, you can use PDF-SEIHON-DATA-KUN <https://pdf-seihon-data-kun.herokuapp.com>.
 
-* System dependencies
+This application is provided freely as open source software, under the MIT License.
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+This application is written in Ruby on Rails and JavaScript.
