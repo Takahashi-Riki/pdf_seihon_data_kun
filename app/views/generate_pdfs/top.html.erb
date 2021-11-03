@@ -49,13 +49,13 @@
 </div>
 <script type="text/javascript">
   $(function(){
-    //declare variables.
+    // Declare variables.
     const file_obj = {}
     const pdf_list = $("#pdf_list");
     const filename_concated = $("#filename_concated");
     const count_concated = $("#count_concated");
     const add_white_page = $("#add_white_page")
-    //make pdf_list sortable with jQuery UI.
+    // Make pdf_list sortable with jQuery UI.
     $("#pdf_list").sortable({
       opacity: 0.5,
       placeholder: "drag",
@@ -69,7 +69,7 @@
         updateConcatedVariables();
       }
     });
-    //search max order in file_obj and return new order being one more than max order.
+    // Search max order in file_obj and return new order being one more than max order.
     function getNewOrder(){
       file_obj_length = Object.keys(file_obj).length;
       if(file_obj_length===0){
@@ -79,7 +79,7 @@
         return Number(keys_array[file_obj_length-1])+1
       }
     }
-    //concatenate variables using ",".
+    // Concatenate variables using ",".
     function concatVariables(...args){
       let concated_variables = ""
       for(let variable of args) {
@@ -91,7 +91,7 @@
       }
       return concated_variables
     }
-    //update filename_concated and count_concated.
+    // Update filename_concated and count_concated.
     function updateConcatedVariables(){
       let filename_list = []
       let count_list = []
@@ -132,7 +132,7 @@
       `;
       return pdf_li_html
     }
-    //When uploading or copying files, add them to file_obj and list in HTML.
+    // When uploading or copying files, add them to file_obj and list in HTML.
     function setNewObjAndLiHtml(order, filename){
       file_obj[order] = {
         order: order,
@@ -142,7 +142,7 @@
       updateConcatedVariables();
       pdf_list.append(createNewLiHTML(order, filename));
     }
-    //Return the sum of count_value and change_value, but the sum can't be less than zero.
+    // Return the sum of count_value and change_value, but the sum can't be less than zero.
     function getCount(count_value, change_value){
       tmp_result = Number(count_value) + Number(change_value);
       if(tmp_result<1){
@@ -151,7 +151,7 @@
         return tmp_result
       }
     }
-    //When uploading files, call setNewObjAndLiHtml.
+    // When uploading files, call setNewObjAndLiHtml.
     $("input[type=file]").change(function() {
       const files = $(this).prop('files');
       const pattern = ".pdf"
@@ -161,7 +161,7 @@
         setNewObjAndLiHtml(order, filename);
       }
     });
-    //When clicking a calculation button, change the amount of clicked file.
+    // When clicking a calculation button, change the amount of clicked file.
     $(document).on('click', '.minus10, .minus1, .plus1, .plus10', function () {
       change_value_class = $(this).attr("class");
       let change_value;
@@ -189,22 +189,22 @@
       file_obj[order].count = Number($(this).parent().find(".count").text());
       updateConcatedVariables();
     });
-    //When clicking a delete button, delete the file clicked.
+    // When clicking a delete button, delete the file clicked.
     $(document).on('click', '.delete', function(){
       $(this).parent().parent().remove();
       const order = $(this).parent().parent().attr("id");
       delete file_obj[order];
     });
-    //When clicking a copy button, copy the file clicked.
+    // When clicking a copy button, copy the file clicked.
     $(document).on('click', '.copy', function(){
       const order = getNewOrder();
       const filename = $(this).parent().parent().find(".filename_wrapper").find(".filename").text();
       setNewObjAndLiHtml(order, filename);
     });
-    //
+    // When clicking a copy button, add a white page.
     add_white_page.click(function(){
       const order = getNewOrder();
-      const filename = "白紙ページ";
+      const filename = "白紙ページ"; // "白紙ページ" means a white page nothing is written
       setNewObjAndLiHtml(order, filename);
     });
   });

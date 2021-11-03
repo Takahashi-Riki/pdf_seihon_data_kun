@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  mount_roboto
   root 'generate_pdfs#root'
   get "/:language" => 'generate_pdfs#top'
   post '/:language/create' => 'generate_pdfs#create'

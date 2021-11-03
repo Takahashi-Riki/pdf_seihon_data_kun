@@ -26,7 +26,6 @@ class GeneratePdfsController < ApplicationController
       for i in 0..pdfs_file.length-1
         uploaded_file = pdfs_file[i]
         begin
-          #File.binwrite("public/uploaded/#{uploaded_file.original_filename}", uploaded_file.read)
           File.binwrite(get_filepath("uploaded", uploaded_file.original_filename), uploaded_file.read)
         rescue
           puts "-----error occured during saving #{uploaded_file}-----"
@@ -38,7 +37,7 @@ class GeneratePdfsController < ApplicationController
       for i in 0..filename_array.length-1
         selected_file = filename_array[i]
         for k in 0..count_array[i].to_i-1
-          if selected_file == "白紙ページ" #"白紙ページ" means a white page nothing is writen on
+          if selected_file == "白紙ページ" #"白紙ページ" means a white page nothing is written
             begin
               pdf << CombinePDF.load(get_filepath("addition", white_page))
             rescue

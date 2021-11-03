@@ -33,12 +33,17 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
-/public/packs
-/public/packs-test
+# Ignore sitemap file
+public/sitemap.xml.gz
+
+# Ignore uploaded or created PDF files, but keep the directory
 /public/uploaded/*
 /public/created/*
 !/public/uploaded/.gitkeep
 !/public/created/.gitkeep
+
+/public/packs
+/public/packs-test
 /node_modules
 /yarn-error.log
 yarn-debug.log*
