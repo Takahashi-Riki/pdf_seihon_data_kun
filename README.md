@@ -1,6 +1,6 @@
 # PDF-SEIHON-DATA-KUN - Open Source making a bookbinding data from PDF files
 
-PDF-SEIHON-DATA-KUN(PDF製本データくん) is an application to make a bookbinding data from PDF data you have.
+PDF-SEIHON-DATA-KUN(PDF製本データくん) is an application making a bookbinding data from PDF data you have.
 
 If you are an office worker, you may want to combine PDF data to create bookbinding data.
 
